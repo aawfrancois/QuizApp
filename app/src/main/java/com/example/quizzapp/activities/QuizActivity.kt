@@ -1,20 +1,28 @@
-package com.example.quizzapp
+package com.example.quizzapp.activities
 
-import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.example.quizzapp.R
+import com.example.quizzapp.db.QuizDB
+import com.example.quizzapp.model.Quiz
+import com.example.quizzapp.model.Score
 import kotlinx.android.synthetic.main.activity_quiz.*
+import org.jetbrains.anko.doAsync
+import java.util.*
 
 class QuizActivity : AppCompatActivity() {
+
+    // On créer un objet QuizDB afin de pouvoir enregister nos score à la fin
+    val quizDb = QuizDB()
 
     var quizs = ArrayList<Quiz>()
     var numberOfGoodAnswers: Int = 0
     var currentQuizIndex: Int = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +33,14 @@ class QuizActivity : AppCompatActivity() {
         quizs.add(Quiz("Quelle est la capitale de l'Angola ?", "Alger", "Paris", "Luanda", 3))
         quizs.add(Quiz("Quelle est la capitale de l'Autriche ?", "Alger", "Vienne", "Marseille", 2))
 
-Log.d("TEST", currentQuizIndex.toString())
+        //Pour mélanger les questions
+        Collections.shuffle(quizs);
 
         showQuestion(quizs.get(currentQuizIndex))
     }
 
     fun showQuestion(quiz: Quiz) {
-        text_question.setText(quiz.question)
+        txtQuestion.setText(quiz.question)
         answer1.setText(quiz.answer1)
         answer2.setText(quiz.answer2)
         answer3.setText(quiz.answer3)
@@ -47,18 +56,25 @@ Log.d("TEST", currentQuizIndex.toString())
             Toast.makeText(this, "+0", Toast.LENGTH_SHORT).show()
         }
 
-
-        text_score.text = numberOfGoodAnswers.toString()
-
         // Pour pouvoir aller à la question suivante
         currentQuizIndex++
 
 
         if (currentQuizIndex >= quizs.size) { // Partie terminé
 
-            val alert = AlertDialog.Builder(this)
+            val sharedPreferences = getSharedPreferences("com.technicien_superieur.thequizcapitale", Context.MODE_PRIVATE)
+            sharedPreferences.edit().putInt("userScore", numberOfGoodAnswers).apply()
+
+            // On registre notre score au niveau de notre base de donnée
+            // On utilise un doAsync afin de ne pas ralentir l'interface de l'utilisateur
+            doAsync {
+                val quizScore = Score(numberOfGoodAnswers, Calendar.getInstance().time.time)
+                quizDb.saveScore(scoreQuiz = quizScore)
+            }
+
+            val alert = android.support.v7.app.AlertDialog.Builder(this)
             alert.setTitle("Partie terminé!")
-            alert.setMessage("Tu as eu : " + numberOfGoodAnswers + " bonne(s) réponse(s)")
+            alert.setMessage("Tu as eu : $numberOfGoodAnswers bonne(s) réponse(s)")
             alert.setPositiveButton("OK") { dialogInterface: DialogInterface?, i: Int ->
                 finish()
             }
@@ -70,15 +86,15 @@ Log.d("TEST", currentQuizIndex.toString())
 
     }
 
-    fun onClickFirstAnswer(view: View) {
+    fun onClickAnwerOne(view: View) {
         handleAnswer(1)
     }
 
-    fun onClickSecondAnswer(view: View) {
+    fun onClickAnwerTwo(view: View) {
         handleAnswer(2)
     }
 
-    fun onClickThirdAnswer(view: View) {
+    fun onClickAnwerThree(view: View) {
         handleAnswer(3)
     }
 }
