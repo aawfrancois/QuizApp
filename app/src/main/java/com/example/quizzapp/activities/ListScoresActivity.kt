@@ -22,8 +22,7 @@ class ListScoresActivity : AppCompatActivity(), AnkoLogger {
 
         doAsync {
             val list = quizDb.requestScores()
-            // pour pouvoir afficher les scores à notre utilisateur
-            // C'est genre l'équivalant de onPostExecute d'un AsyncTask
+
             uiThread {
                 score_list.adapter = ScoreAdapter(list, this@ListScoresActivity)
             }

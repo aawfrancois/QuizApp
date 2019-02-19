@@ -3,6 +3,7 @@
           package="com.example.quizzapp">
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
             android:name=".App"
@@ -12,18 +13,20 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".activities.AddQuestionsActivity">
+        </activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.QuizActivity" />
+        <activity android:name=".activities.QuizActivity"/>
         <activity
                 android:name=".activities.ListScoresActivity"
                 android:label="@string/title_activity_list_scores"
-                android:theme="@style/AppTheme.NoActionBar"></activity>
+                android:theme="@style/AppTheme.NoActionBar"/>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

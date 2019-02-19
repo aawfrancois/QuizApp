@@ -10,10 +10,6 @@ import com.example.quizzapp.R
 import com.example.quizzapp.model.Score
 import kotlinx.android.synthetic.main.score_item.view.*
 
-/**
- * Created by Fayçal KADDOURI on 27/10/2018.
- * Website : www.technicien-superieur.com
- */
 class ScoreAdapter(val scores: List<Score>, val context: Context)
     : RecyclerView.Adapter<ViewHolder>() {
 

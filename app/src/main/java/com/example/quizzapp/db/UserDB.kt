@@ -1,6 +1,5 @@
 package com.example.quizzapp.db
 
-import com.example.quizzapp.model.Score
 import com.example.quizzapp.model.User
 import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.insert
@@ -15,9 +14,9 @@ class UserDB(private val dbHelper: MySqlDBHelper = MySqlDBHelper.instance) {
             .parseList(classParser<User>())
     }
 
-    // Pour engistrer un score
-    fun saveScore(user: User) = dbHelper.use {
+    fun saveUser(userQuiz: User) = dbHelper.use {
         insert(UserTable.NAME,
-            ScoreTable.SCORE to user.username)
+            UserTable.USERNAME to userQuiz.username,
+            UserTable.PASSWORD to userQuiz.password)
     }
 }
